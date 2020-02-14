@@ -577,6 +577,20 @@ extension NSDate: _ManagedPropertyType {
         prop.type = .date
     }
 }
+/// :nodoc:
+extension Decimal128: _ManagedPropertyType {
+    // swiftlint:disable:next identifier_name
+    public static func _rlmProperty(_ prop: RLMProperty) {
+        prop.type = .decimal128
+    }
+}
+/// :nodoc:
+extension ObjectId: _ManagedPropertyType {
+    // swiftlint:disable:next identifier_name
+    public static func _rlmProperty(_ prop: RLMProperty) {
+        prop.type = .objectId
+    }
+}
 
 /// :nodoc:
 extension Object: _ManagedPropertyType {

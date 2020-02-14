@@ -102,6 +102,8 @@ class SwiftListObject: Object {
     let string = List<String>()
     let data = List<Data>()
     let date = List<Date>()
+    let decimal = List<Decimal128>()
+    let objectId = List<ObjectId>()
 
     let intOpt = List<Int?>()
     let int8Opt = List<Int8?>()
@@ -113,6 +115,8 @@ class SwiftListObject: Object {
     let stringOpt = List<String?>()
     let dataOpt = List<Data?>()
     let dateOpt = List<Date?>()
+    let decimalOpt = List<Decimal128?>()
+    let objectIdOpt = List<ObjectId?>()
 }
 
 class SwiftImplicitlyUnwrappedOptionalObject: Object {
