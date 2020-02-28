@@ -17,20 +17,14 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #import "RLMAppCredentials_Private.hpp"
+
 #import "RLMSyncUtil_Private.h"
 #import "RLMUtil.hpp"
 
 using namespace realm;
 
-@interface RLMAppCredentials ()
-
-- (instancetype) initWithAppCredentials:(const app::AppCredentials&)credentials NS_DESIGNATED_INITIALIZER;
-
-@end
-
 @implementation RLMAppCredentials
-
-- (instancetype)initWithAppCredentials:(const app::AppCredentials&)credentials {
+- (instancetype)initWithAppCredentials:(app::AppCredentials&&)credentials {
     if (self = [super init]) {
         _appCredentials = std::move(credentials);
         self.provider = @(credentials.provider_as_string().data());
@@ -40,36 +34,34 @@ using namespace realm;
 }
 
 + (instancetype)credentialsWithFacebookToken:(RLMAppCredentialsToken)token {
-    return [[self alloc] initWithAppCredentials: app::AppCredentials::facebook(token.UTF8String)];
+    return [[self alloc] initWithAppCredentials:app::AppCredentials::facebook(token.UTF8String)];
 }
 
-+ (instancetype)credentialsWithGoogleToken:(RLMAppCredentialsToken)token {
++ (instancetype)credentialsWithGoogleToken:(__unused RLMAppCredentialsToken)token {
     // FIXME: Implement once available in the object store
     REALM_UNREACHABLE();
 }
 
 + (instancetype)credentialsWithUsername:(NSString *)username
                                password:(NSString *)password {
-    return [[self alloc] initWithAppCredentials: app::AppCredentials::username_password(username.UTF8String,
-                                                                                        password.UTF8String)];
+    return [[self alloc] initWithAppCredentials:app::AppCredentials::username_password(username.UTF8String,
+                                                                                       password.UTF8String)];
 }
 
-+ (instancetype)credentialsWithJWT:(NSString *)token {
++ (instancetype)credentialsWithJWT:(__unused NSString *)token {
     // FIXME: Implement once available in the object store
     REALM_UNREACHABLE();
 }
     
 + (instancetype)anonymousCredentials {
-    return [[self alloc] initWithAppCredentials: realm::app::AppCredentials::anonymous()];
+    return [[self alloc] initWithAppCredentials:realm::app::AppCredentials::anonymous()];
 }
 
 - (BOOL)isEqual:(id)object {
-    if (![object isKindOfClass:[RLMAppCredentials class]]) {
-        return NO;
+    if (auto that = RLMDynamicCast<RLMAppCredentials>(object)) {
+        return [self.provider isEqualToString:that.provider]
+            && self.appCredentials.serialize_as_json() == that.appCredentials.serialize_as_json();
     }
-    RLMAppCredentials *that = (RLMAppCredentials *)object;
-    return ([self.provider isEqualToString:that.provider]
-            && self.appCredentials.serialize_as_json() == that.appCredentials.serialize_as_json());
+    return NO;
 }
-
 @end

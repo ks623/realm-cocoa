@@ -587,7 +587,7 @@ id RLMDynamicGetByName(__unsafe_unretained RLMObjectBase *const obj,
     return RLMDynamicGet(obj, prop);
 }
 
-RLMAccessorContext::RLMAccessorContext(RLMAccessorContext& parent, realm::Property const& property)
+RLMAccessorContext::RLMAccessorContext(RLMAccessorContext& parent, realm::Obj const&, realm::Property const& property)
 : _realm(parent._realm)
 , _info(property.type == realm::PropertyType::Object ? parent._info.linkTargetType(property) : parent._info)
 , _promote_existing(parent._promote_existing)
@@ -766,28 +766,6 @@ realm::Obj RLMAccessorContext::unbox(__unsafe_unretained id const v, CreatePolic
         return RLMCreateObjectInRealmWithValue(_realm, _info.rlmObjectSchema.className, v, policy)->_row;
     }
     return link->_row;
-}
-
-// FIXME: Implement stub
-template<>
-realm::ObjectId RLMAccessorContext::unbox(__unsafe_unretained id const, CreatePolicy, ObjKey) {
-    REALM_UNREACHABLE();
-}
-
-// FIXME: Implement stub
-template<>
-realm::util::Optional<realm::ObjectId> RLMAccessorContext::unbox(__unsafe_unretained id const, CreatePolicy, ObjKey) {
-    REALM_UNREACHABLE();
-}
-
-template<>
-realm::Decimal128 RLMAccessorContext::unbox(__unsafe_unretained id const, CreatePolicy, ObjKey) {
-    REALM_UNREACHABLE();
-}
-
-// FIXME: Implement stub
-id RLMAccessorContext::unbox_embedded(id, realm::CreatePolicy, realm::Obj, realm::ColKey, size_t) {
-    REALM_UNREACHABLE();
 }
 
 void RLMAccessorContext::will_change(realm::Obj const& row, realm::Property const& prop) {
